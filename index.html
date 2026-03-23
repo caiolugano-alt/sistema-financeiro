@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Sistema Financeiro</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="login">
+<h2>Login</h2>
+<input id="user" placeholder="Usuário">
+<input id="pass" type="password" placeholder="Senha">
+<button onclick="entrar()">Entrar</button>
+</div>
+
+<div id="sistema" style="display:none;">
+<h1>Relatório Financeiro</h1>
+
+<div class="menu">
+<button onclick="mostrar('fixas')">Fixas</button>
+<button onclick="mostrar('gastos')">Gastos</button>
+<button onclick="mostrar('compras')">Compras</button>
+<button onclick="mostrar('entradas')">Entradas</button>
+<button onclick="gerarRelatorio()">Relatório</button>
+</div>
+
+<!-- FIXAS -->
+<div id="fixas" class="secao">
+<h2>Fixas</h2>
+<input id="fixoNome" placeholder="Nome">
+<input id="fixoValor" type="number" placeholder="Valor">
+<button onclick="adicionar('fixas','fixoNome','fixoValor')">Adicionar</button>
+
+<table border="1">
+<thead><tr><th>Nome</th><th>Valor</th><th>Ação</th></tr></thead>
+<tbody id="listaFixas"></tbody>
+</table>
+</div>
+
+<!-- GASTOS -->
+<div id="gastos" class="secao">
+<h2>Gastos</h2>
+<input id="gastoNome" placeholder="Nome">
+<input id="gastoValor" type="number" placeholder="Valor">
+<button onclick="adicionar('gastos','gastoNome','gastoValor')">Adicionar</button>
+
+<table border="1">
+<tbody id="listaGastos"></tbody>
+</table>
+</div>
+
+<!-- COMPRAS -->
+<div id="compras" class="secao">
+<h2>Compras</h2>
+<input id="compraNome">
+<input id="compraValor" type="number">
+<button onclick="adicionar('compras','compraNome','compraValor')">Adicionar</button>
+
+<table border="1">
+<tbody id="listaCompras"></tbody>
+</table>
+</div>
+
+<!-- ENTRADAS -->
+<div id="entradas" class="secao">
+<h2>Entradas</h2>
+<input id="entradaNome">
+<input id="entradaValor" type="number">
+<button onclick="adicionar('entradas','entradaNome','entradaValor')">Adicionar</button>
+
+<table border="1">
+<tbody id="listaEntradas"></tbody>
+</table>
+</div>
+
+<div id="relatorio" class="secao"></div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
