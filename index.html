@@ -2,36 +2,101 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Sistema Financeiro</title>
-
+<title>Controle Financeiro</title>
 <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-<h1>Relatório Financeiro</h1>
+<h1>CONTROLE FINANCEIRO</h1>
 
-<select id="mes">
-<option>Março</option>
-<option>Abril</option>
-<option>Maio</option>
+<!-- FORM -->
+<div class="form">
+<input id="desc" placeholder="Descrição">
+
+<select id="tipo">
+<option value="fixas">Contas Fixas</option>
+<option value="compras">Compras</option>
+<option value="higiene">Higiene</option>
+<option value="entradas">Entradas (Salário)</option>
 </select>
 
-<div>
-<button onclick="mostrar('fixas')">Fixas</button>
-<button onclick="mostrar('gastos')">Gastos</button>
-<button onclick="mostrar('entradas')">Entradas</button>
-<button onclick="mostrar('relatorio')">Relatório</button>
+<input id="valor" type="number" placeholder="Valor">
+
+<button onclick="add()">Adicionar</button>
 </div>
 
-<div id="conteudo"></div>
+<!-- FIXAS -->
+<div class="bloco">
+<h2 class="titulo vermelho">CONTAS FIXAS</h2>
+<table>
+<tr class="cabecalho">
+<th>DESCRIÇÃO</th>
+<th>VALOR</th>
+<th>SITUAÇÃO</th>
+<th>AÇÃO</th>
+</tr>
+<tbody id="fixas"></tbody>
+<tr class="total">
+<td>TOTAL</td>
+<td id="totalFixas">R$ 0</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+</div>
 
-<canvas id="grafico"></canvas>
+<!-- COMPRAS -->
+<div class="bloco">
+<h2 class="titulo amarelo">COMPRAS</h2>
+<table>
+<tr class="cabecalho">
+<th>DESCRIÇÃO</th>
+<th>VALOR</th>
+<th>SITUAÇÃO</th>
+<th>AÇÃO</th>
+</tr>
+<tbody id="compras"></tbody>
+<tr class="total">
+<td>TOTAL</td>
+<td id="totalCompras">R$ 0</td>
+<td></td>
+<td></td>
+</tr>
+</table>
+</div>
 
-<!-- 🔥 MUITO IMPORTANTE -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- HIGIENE -->
+<div class="bloco">
+<h2 class="titulo azul">HIGIENE</h2>
+<table>
+<tr class="cabecalho">
+<th>DESCRIÇÃO</th>
+<th>VALOR</th>
+<th>AÇÃO</th>
+</tr>
+<tbody id="higiene"></tbody>
+</table>
+</div>
+
+<!-- ENTRADAS -->
+<div class="bloco">
+<h2 class="titulo verde">ENTRADAS</h2>
+<table>
+<tr class="cabecalho">
+<th>DESCRIÇÃO</th>
+<th>VALOR</th>
+<th>AÇÃO</th>
+</tr>
+<tbody id="entradas"></tbody>
+<tr class="total">
+<td>TOTAL RECEBIDO</td>
+<td id="totalEntradas">R$ 0</td>
+<td></td>
+</tr>
+</table>
+</div>
+
 <script src="script.js"></script>
-
 </body>
 </html>
