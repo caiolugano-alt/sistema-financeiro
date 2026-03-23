@@ -1,128 +1,80 @@
+let dados = {
+fixas: [],
+gastos: [],
+entradas: []
+};
+
 let grafico;
 
-// LOGIN
-function logar() {
-const user = document.getElementById("usuario").value;
-const pass = document.getElementById("senha").value;
-
-if (user === "admin" && pass === "1234") {
-document.getElementById("login").style.display = "none";
-document.getElementById("sistema").style.display = "block";
-
-localStorage.setItem("logado", "true");
-
-carregarDados();
-mostrar("fixas");
-} else {
-alert("Usuário ou senha incorretos");
-}
-}
-
-// manter logado
-window.onload = function() {
-if (localStorage.getItem("logado") === "true") {
-document.getElementById("login").style.display = "none";
-document.getElementById("sistema").style.display = "block";
-
-carregarDados();
-mostrar("fixas");
-}
-}
-
-function getMes() {
-return document.getElementById("mes").value;
-}
-
 function mostrar(secao) {
-document.querySelectorAll(".secao").forEach(div => div.style.display = "none");
-document.getElementById(secao).style.display = "block";
+const conteudo = document.getElementById("conteudo");
+conteudo.innerHTML = "";
 
-if (secao === "relatorio") atualizarGrafico();
+if (secao === "fixas") {
+conteudo.innerHTML = `
+<h2>Contas Fixas</h2>
+<input id="nome" placeholder="Nome">
+<input id="valor" placeholder="Valor">
+<button onclick="adicionar('fixas')">Adicionar</button>
+<div id="lista"></div>
+`;
 }
 
-function adicionar(tipo, nomeId, valorId) {
-const nome = document.getElementById(nomeId).value;
-const valor = parseFloat(document.getElementById(valorId).value);
+if (secao === "gastos") {
+conteudo.innerHTML = `
+<h2>Gastos</h2>
+<input id="nome" placeholder="Nome">
+<input id="valor" placeholder="Valor">
+<button onclick="adicionar('gastos')">Adicionar</button>
+<div id="lista"></div>
+`;
+}
 
-if (!nome || !valor) return alert("Preencha tudo");
+if (secao === "entradas") {
+conteudo.innerHTML = `
+<h2>Entradas</h2>
+<input id="nome" placeholder="Nome">
+<input id="valor" placeholder="Valor">
+<button onclick="adicionar('entradas')">Adicionar</button>
+<div id="lista"></div>
+`;
+}
 
-let mes = getMes();
-let dados = JSON.parse(localStorage.getItem(mes)) || {
-fixas: [],
-gastos: [],
-entradas: []
-};
+if (secao === "relatorio") {
+gerarGrafico();
+}
+
+atualizarLista(secao);
+}
+
+function adicionar(tipo) {
+const nome = document.getElementById("nome").value;
+const valor = parseFloat(document.getElementById("valor").value);
+
+if (!nome || isNaN(valor)) return;
 
 dados[tipo].push({ nome, valor });
-
-localStorage.setItem(mes, JSON.stringify(dados));
-
-document.getElementById(nomeId).value = "";
-document.getElementById(valorId).value = "";
-
-carregarDados();
+salvarDados();
+mostrar(tipo);
 }
 
-function carregarDados() {
-let mes = getMes();
-let dados = JSON.parse(localStorage.getItem(mes)) || {
-fixas: [],
-gastos: [],
-entradas: []
-};
+function atualizarLista(tipo) {
+const lista = document.getElementById("lista");
+if (!lista) return;
 
-["fixas", "gastos", "entradas"].forEach(tipo => {
-let lista = document.getElementById("lista-" + tipo);
 lista.innerHTML = "";
 
-dados[tipo].forEach((item, i) => {
-let li = document.createElement("li");
-li.innerHTML = `
-${item.nome} - R$ ${item.valor.toFixed(2)}
-<button onclick="remover('${tipo}', ${i})">❌</button>
-`;
-lista.appendChild(li);
+dados[tipo].forEach(item => {
+lista.innerHTML += `<p>${item.nome} - R$ ${item.valor}</p>`;
 });
-});
-
-atualizarResumo(dados);
 }
 
-function remover(tipo, index) {
-let mes = getMes();
-let dados = JSON.parse(localStorage.getItem(mes));
-
-dados[tipo].splice(index, 1);
-
-localStorage.setItem(mes, JSON.stringify(dados));
-
-carregarDados();
-}
-
-function atualizarResumo(dados) {
-let entradas = dados.entradas.reduce((a,b)=>a+b.valor,0);
-let gastos = dados.gastos.reduce((a,b)=>a+b.valor,0);
-let fixas = dados.fixas.reduce((a,b)=>a+b.valor,0);
-
-let saldo = entradas - (gastos + fixas);
-
-document.getElementById("total").innerText =
-`Saldo: R$ ${saldo.toFixed(2)}`;
-}
-
-function atualizarGrafico() {
-let mes = getMes();
-let dados = JSON.parse(localStorage.getItem(mes)) || {
-fixas: [],
-gastos: [],
-entradas: []
-};
-
-let totalFixas = dados.fixas.reduce((a,b)=>a+b.valor,0);
-let totalGastos = dados.gastos.reduce((a,b)=>a+b.valor,0);
-let totalEntradas = dados.entradas.reduce((a,b)=>a+b.valor,0);
-
+function gerarGrafico() {
 const ctx = document.getElementById("grafico");
+
+const totalEntradas = dados.entradas.reduce((a, b) => a + b.valor, 0);
+const totalGastos = dados.gastos.reduce((a, b) => a + b.valor, 0);
+const totalFixas = dados.fixas.reduce((a, b) => a + b.valor, 0);
 
 if (grafico) grafico.destroy();
 
@@ -137,3 +89,17 @@ backgroundColor: ["green", "red", "orange"]
 }
 });
 }
+
+function salvarDados() {
+localStorage.setItem("dados", JSON.stringify(dados));
+}
+
+function carregarDados() {
+const salvo = localStorage.getItem("dados");
+if (salvo) {
+dados = JSON.parse(salvo);
+}
+}
+
+carregarDados();
+mostrar("fixas");
