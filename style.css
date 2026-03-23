@@ -1,6 +1,6 @@
 body {
 font-family: Arial;
-background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+background: linear-gradient(135deg, #1e2a38, #2c5364);
 color: white;
 text-align: center;
 }
@@ -9,74 +9,55 @@ h1 {
 margin-top: 20px;
 }
 
-.menu {
-margin: 20px;
-}
-
 .menu button {
 margin: 5px;
-padding: 10px 15px;
-background: #00a859;
+padding: 10px;
 border: none;
+background: #00c853;
 color: white;
 border-radius: 8px;
 cursor: pointer;
 }
 
-.menu button:hover {
-background: #00cc66;
-}
-
 input {
 padding: 10px;
 margin: 5px;
-border-radius: 6px;
+border-radius: 8px;
 border: none;
-width: 150px;
 }
 
 button {
 padding: 10px;
-border-radius: 6px;
+border-radius: 8px;
 border: none;
 cursor: pointer;
 }
 
 .secao {
 display: none;
-margin-top: 20px;
 }
 
-/* 🔥 CENTRALIZAR TABELA */
-table {
-margin: 20px auto;
-border-collapse: collapse;
+ul {
+list-style: none;
+padding: 0;
+}
+
+li {
 background: white;
 color: black;
-min-width: 300px;
-}
-
-/* CABEÇALHO */
-th {
-background: #00a859;
-color: white;
+margin: 5px auto;
 padding: 10px;
+border-radius: 8px;
+width: 300px;
 }
 
-/* LINHAS */
-td {
-padding: 10px;
-border: 1px solid #ccc;
+/* MOBILE */
+@media (max-width: 600px) {
+input, button {
+width: 90%;
 }
 
-/* BOTÃO EXCLUIR */
-td button {
-background: red;
-color: white;
-border-radius: 5px;
-padding: 5px 10px;
+li {
+width: 90%;
 }
-
-td button:hover {
-background: darkred;
 }
