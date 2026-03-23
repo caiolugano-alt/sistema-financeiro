@@ -1,77 +1,37 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <title>Sistema Financeiro</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
+
 <body>
-
-<!-- LOGIN -->
-<div id="login">
-<h2>Login</h2>
-<input id="usuario" placeholder="Usuário">
-<input id="senha" type="password" placeholder="Senha">
-<button onclick="logar()">Entrar</button>
-</div>
-
-<!-- SISTEMA -->
-<div id="sistema" style="display:none;">
 
 <h1>Relatório Financeiro</h1>
 
-<select id="mes" onchange="carregarDados()">
-<option value="Março">Março</option>
-<option value="Abril">Abril</option>
-<option value="Maio">Maio</option>
+<select id="mes">
+<option>Março</option>
+<option>Abril</option>
+<option>Maio</option>
 </select>
 
-<div class="menu">
+<div>
 <button onclick="mostrar('fixas')">Fixas</button>
 <button onclick="mostrar('gastos')">Gastos</button>
 <button onclick="mostrar('entradas')">Entradas</button>
 <button onclick="mostrar('relatorio')">Relatório</button>
 </div>
 
-<!-- FIXAS -->
-<div id="fixas" class="secao">
-<h2>Contas Fixas</h2>
-<input id="fixoNome" placeholder="Nome">
-<input id="fixoValor" placeholder="Valor">
-<button onclick="adicionar('fixas','fixoNome','fixoValor')">Adicionar</button>
-<ul id="lista-fixas"></ul>
-</div>
+<div id="conteudo"></div>
 
-<!-- GASTOS -->
-<div id="gastos" class="secao">
-<h2>Gastos</h2>
-<input id="gastoNome" placeholder="Nome">
-<input id="gastoValor" placeholder="Valor">
-<button onclick="adicionar('gastos','gastoNome','gastoValor')">Adicionar</button>
-<ul id="lista-gastos"></ul>
-</div>
-
-<!-- ENTRADAS -->
-<div id="entradas" class="secao">
-<h2>Entradas</h2>
-<input id="entradaNome" placeholder="Nome">
-<input id="entradaValor" placeholder="Valor">
-<button onclick="adicionar('entradas','entradaNome','entradaValor')">Adicionar</button>
-<ul id="lista-entradas"></ul>
-</div>
-
-<!-- RELATÓRIO -->
-<div id="relatorio" class="secao">
-<h2>Resumo</h2>
-<p id="total"></p>
 <canvas id="grafico"></canvas>
-</div>
 
-</div>
-
+<!-- 🔥 MUITO IMPORTANTE -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="script.js"></script>
+
 </body>
 </html>
