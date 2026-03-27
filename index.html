@@ -5,97 +5,59 @@
 <title>Controle Financeiro</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<h1>CONTROLE FINANCEIRO</h1>
+<div class="container">
 
-<!-- FORM -->
+<h2 id="mesAtual"></h2>
+
 <div class="form">
-<input id="desc" placeholder="Descrição">
+<input type="text" id="descricao" placeholder="Descrição">
 
 <select id="tipo">
-<option value="fixas">Contas Fixas</option>
+<option value="fixo">Contas Fixas</option>
 <option value="compras">Compras</option>
 <option value="higiene">Higiene</option>
-<option value="entradas">Entradas (Salário)</option>
+<option value="entrada">Entradas</option>
 </select>
 
-<input id="valor" type="number" placeholder="Valor">
-
-<button onclick="add()">Adicionar</button>
+<input type="number" id="valor" placeholder="Valor">
+<button onclick="adicionar()">Adicionar</button>
 </div>
 
-<!-- FIXAS -->
-<div class="bloco">
-<h2 class="titulo vermelho">CONTAS FIXAS</h2>
-<table>
-<tr class="cabecalho">
-<th>DESCRIÇÃO</th>
-<th>VALOR</th>
-<th>SITUAÇÃO</th>
-<th>AÇÃO</th>
-</tr>
-<tbody id="fixas"></tbody>
-<tr class="total">
-<td>TOTAL</td>
-<td id="totalFixas">R$ 0</td>
-<td></td>
-<td></td>
-</tr>
-</table>
+<!-- BOTÃO PDF -->
+<button onclick="gerarPDFManual()" style="margin-bottom:15px;">
+Gerar PDF Agora
+</button>
+
+<div class="box vermelho">
+<h3>CONTAS FIXAS</h3>
+<ul id="fixo"></ul>
+<p>Total: <span id="total-fixo">R$ 0</span></p>
 </div>
 
-<!-- COMPRAS -->
-<div class="bloco">
-<h2 class="titulo amarelo">COMPRAS</h2>
-<table>
-<tr class="cabecalho">
-<th>DESCRIÇÃO</th>
-<th>VALOR</th>
-<th>SITUAÇÃO</th>
-<th>AÇÃO</th>
-</tr>
-<tbody id="compras"></tbody>
-<tr class="total">
-<td>TOTAL</td>
-<td id="totalCompras">R$ 0</td>
-<td></td>
-<td></td>
-</tr>
-</table>
+<div class="box amarelo">
+<h3>COMPRAS</h3>
+<ul id="compras"></ul>
+<p>Total: <span id="total-compras">R$ 0</span></p>
 </div>
 
-<!-- HIGIENE -->
-<div class="bloco">
-<h2 class="titulo azul">HIGIENE</h2>
-<table>
-<tr class="cabecalho">
-<th>DESCRIÇÃO</th>
-<th>VALOR</th>
-<th>AÇÃO</th>
-</tr>
-<tbody id="higiene"></tbody>
-</table>
+<div class="box azul">
+<h3>HIGIENE</h3>
+<ul id="higiene"></ul>
+<p>Total: <span id="total-higiene">R$ 0</span></p>
 </div>
 
-<!-- ENTRADAS -->
-<div class="bloco">
-<h2 class="titulo verde">ENTRADAS</h2>
-<table>
-<tr class="cabecalho">
-<th>DESCRIÇÃO</th>
-<th>VALOR</th>
-<th>AÇÃO</th>
-</tr>
-<tbody id="entradas"></tbody>
-<tr class="total">
-<td>TOTAL RECEBIDO</td>
-<td id="totalEntradas">R$ 0</td>
-<td></td>
-</tr>
-</table>
+<div class="box verde">
+<h3>ENTRADAS</h3>
+<ul id="entrada"></ul>
+<p>Total: <span id="total-entrada">R$ 0</span></p>
 </div>
+
+</div>
+
+<!-- PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script src="script.js"></script>
 </body>
