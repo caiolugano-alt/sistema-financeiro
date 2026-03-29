@@ -2,63 +2,69 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controle Financeiro</title>
-<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+font-family: Arial;
+background: #f5f5f5;
+padding: 10px;
+}
+
+.card {
+background: white;
+padding: 10px;
+border-radius: 10px;
+margin-top: 10px;
+}
+
+input, select, button {
+width: 100%;
+padding: 10px;
+margin: 5px 0;
+}
+
+button {
+background: #007bff;
+color: white;
+border: none;
+}
+
+.delete {
+color: red;
+cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<div class="container">
+<h2>Controle Financeiro</h2>
 
-<h2 id="mesAtual"></h2>
+<select id="mes"></select>
 
-<div class="form">
 <input type="text" id="descricao" placeholder="Descrição">
+<input type="number" id="valor" placeholder="Valor">
 
 <select id="tipo">
-<option value="fixo">Contas Fixas</option>
-<option value="compras">Compras</option>
-<option value="higiene">Higiene</option>
-<option value="entrada">Entradas</option>
+<option value="entrada">Entrada</option>
+<option value="saida">Saída</option>
 </select>
 
-<input type="number" id="valor" placeholder="Valor">
 <button onclick="adicionar()">Adicionar</button>
+
+<div class="card">
+<h3>Saldo: R$ <span id="saldo">0</span></h3>
 </div>
 
-<!-- BOTÃO PDF -->
-<button onclick="gerarPDFManual()" style="margin-bottom:15px;">
-Gerar PDF Agora
-</button>
+<div id="lista" class="card"></div>
 
-<div class="box vermelho">
-<h3>CONTAS FIXAS</h3>
-<ul id="fixo"></ul>
-<p>Total: <span id="total-fixo">R$ 0</span></p>
-</div>
+<canvas id="grafico"></canvas>
 
-<div class="box amarelo">
-<h3>COMPRAS</h3>
-<ul id="compras"></ul>
-<p>Total: <span id="total-compras">R$ 0</span></p>
-</div>
+<script type="module" src="script.js"></script>
 
-<div class="box azul">
-<h3>HIGIENE</h3>
-<ul id="higiene"></ul>
-<p>Total: <span id="total-higiene">R$ 0</span></p>
-</div>
-
-<div class="box verde">
-<h3>ENTRADAS</h3>
-<ul id="entrada"></ul>
-<p>Total: <span id="total-entrada">R$ 0</span></p>
-</div>
-
-</div>
-
-<!-- PDF -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<script src="script.js"></script>
 </body>
 </html>

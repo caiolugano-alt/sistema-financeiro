@@ -1,162 +1,122 @@
-let dados = JSON.parse(localStorage.getItem("financeiro")) || {};
-let relatorios = JSON.parse(localStorage.getItem("relatorios")) || {};
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+getDatabase,
+ref,
+push,
+onValue,
+remove
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-function getMesAtual() {
-return new Date().toISOString().slice(0,7);
-}
+// 🔥 SUA CONFIG
+const firebaseConfig = {
+apiKey: "AIzaSyA0Ybp19oNnssftNduxr-Hy8lz-U2T6BOc",
+authDomain: "controle-financeiro-370c8.firebaseapp.com",
+databaseURL: "https://controle-financeiro-370c8-default-rtdb.firebaseio.com",
+projectId: "controle-financeiro-370c8",
+storageBucket: "controle-financeiro-370c8.appspot.com",
+messagingSenderId: "203673077768",
+appId: "1:203673077768:web:48ae75991c21a6f702e9bd"
+};
 
-function mostrarMes() {
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ELEMENTOS
+const lista = document.getElementById("lista");
+const saldoEl = document.getElementById("saldo");
+const mesSelect = document.getElementById("mes");
+
+// MESES
 const meses = [
 "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
 "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
 ];
-const data = new Date();
-document.getElementById("mesAtual").innerText =
-meses[data.getMonth()] + " " + data.getFullYear();
-}
 
-function gerarPDF(mes, dadosMes) {
-const { jsPDF } = window.jspdf;
-const doc = new jsPDF();
-
-doc.text(`Relatório Financeiro - ${mes}`, 20, 20);
-
-let y = 30;
-
-const tipos = [
-{nome:"Contas Fixas", chave:"fixo"},
-{nome:"Compras", chave:"compras"},
-{nome:"Higiene", chave:"higiene"},
-{nome:"Entradas", chave:"entrada"}
-];
-
-tipos.forEach(tipo => {
-doc.text(tipo.nome, 20, y);
-y += 6;
-
-let total = 0;
-
-if (dadosMes[tipo.chave]) {
-dadosMes[tipo.chave].forEach(item => {
-doc.text(`${item.desc} - R$ ${item.valor}`, 25, y);
-total += item.valor;
-y += 6;
-});
-}
-
-doc.text(`Total: R$ ${total.toFixed(2)}`, 25, y);
-y += 10;
+meses.forEach((m, i) => {
+const op = document.createElement("option");
+op.value = i;
+op.text = m;
+mesSelect.appendChild(op);
 });
 
-doc.save(`Relatorio-${mes}.pdf`);
-}
+mesSelect.value = new Date().getMonth();
 
-// BOTÃO PDF
-function gerarPDFManual() {
-const mes = getMesAtual();
-if (dados[mes]) {
-gerarPDF(mes, dados[mes]);
-} else {
-alert("Sem dados nesse mês");
-}
-}
+// REFERÊNCIA
+const dbRef = ref(db, "movimentacoes");
 
-// TROCA DE MÊS
-function verificarMudancaMes() {
-const mesAtual = getMesAtual();
-const mesSalvo = localStorage.getItem("mesAtual");
+// ➕ ADICIONAR
+window.adicionar = function () {
+const descricao = document.getElementById("descricao").value;
+const valor = Number(document.getElementById("valor").value);
+const tipo = document.getElementById("tipo").value;
+const mes = mesSelect.value;
 
-if (!mesSalvo) {
-localStorage.setItem("mesAtual", mesAtual);
-return;
-}
+if (!descricao || !valor) return alert("Preencha tudo");
 
-if (mesSalvo !== mesAtual) {
-
-if (dados[mesSalvo]) {
-gerarPDF(mesSalvo, dados[mesSalvo]);
-relatorios[mesSalvo] = dados[mesSalvo];
-localStorage.setItem("relatorios", JSON.stringify(relatorios));
-}
-
-dados[mesAtual] = {
-fixo: [],
-compras: [],
-higiene: [],
-entrada: []
+push(dbRef, {
+descricao,
+valor,
+tipo,
+mes
+});
 };
 
-localStorage.setItem("mesAtual", mesAtual);
-salvar();
+// ❌ REMOVER
+window.remover = function (id) {
+remove(ref(db, "movimentacoes/" + id));
+};
+
+// 🔄 CARREGAR
+onValue(dbRef, (snapshot) => {
+lista.innerHTML = "";
+
+let saldo = 0;
+let entrada = 0;
+let saida = 0;
+
+const mesAtual = mesSelect.value;
+
+snapshot.forEach((child) => {
+const item = child.val();
+const id = child.key;
+
+if (item.mes != mesAtual) return;
+
+if (item.tipo === "entrada") {
+saldo += item.valor;
+entrada += item.valor;
+} else {
+saldo -= item.valor;
+saida += item.valor;
 }
-}
 
-function adicionar() {
-const desc = document.getElementById("descricao").value;
-const tipo = document.getElementById("tipo").value;
-const valor = parseFloat(document.getElementById("valor").value);
-
-if (!desc || !valor) return alert("Preencha tudo");
-
-const mes = getMesAtual();
-
-if (!dados[mes]) {
-dados[mes] = {fixo:[], compras:[], higiene:[], entrada:[]};
-}
-
-dados[mes][tipo].push({desc, valor});
-
-salvar();
-carregar();
-
-document.getElementById("descricao").value = "";
-document.getElementById("valor").value = "";
-}
-
-function carregar() {
-const mes = getMesAtual();
-const tipos = ["fixo","compras","higiene","entrada"];
-
-tipos.forEach(tipo => {
-const ul = document.getElementById(tipo);
-ul.innerHTML = "";
-
-let total = 0;
-
-if (dados[mes] && dados[mes][tipo]) {
-dados[mes][tipo].forEach((item, i) => {
-total += item.valor;
-
-const li = document.createElement("li");
-li.innerHTML = `
-${item.desc} - R$ ${item.valor}
-<button onclick="remover('${tipo}', ${i})">X</button>
+lista.innerHTML += `
+<div>
+${item.descricao} - R$ ${item.valor}
+<span class="delete" onclick="remover('${id}')">❌</span>
+</div>
 `;
-ul.appendChild(li);
 });
-}
 
-document.getElementById(`total-${tipo}`).innerText =
-"R$ " + total.toFixed(2);
+saldoEl.innerText = saldo;
+
+// gráfico
+if (window.chart) window.chart.destroy();
+
+const ctx = document.getElementById("grafico");
+
+window.chart = new Chart(ctx, {
+type: "pie",
+data: {
+labels: ["Entradas", "Saídas"],
+datasets: [{
+data: [entrada, saida]
+}]
+}
 });
-}
+});
 
-function remover(tipo, index) {
-const mes = getMesAtual();
-dados[mes][tipo].splice(index, 1);
-salvar();
-carregar();
-}
-
-function salvar() {
-localStorage.setItem("financeiro", JSON.stringify(dados));
-}
-
-mostrarMes();
-verificarMudancaMes();
-carregar();
-
-setInterval(() => {
-mostrarMes();
-verificarMudancaMes();
-}, 60000);
+// troca de mês
+mesSelect.addEventListener("change", () => {
+location.reload();
+});
