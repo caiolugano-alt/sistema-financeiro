@@ -14,8 +14,18 @@ const db = firebase.firestore();
 
 // 📅 MÊS AUTOMÁTICO
 function pegarMesAtual() {
-const data = new Date();
-return data.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+const hoje = new Date();
+const meses =  [
+    "janeiro", "fevereiro", "março", "abril",
+    "maio",  "junho",  "julho",  "agosto",
+    "setembro",  "outubro", "novembro", "dezembro"
+
+]
+
+const mes = meses[hoje.getMonth()];
+const ano = hoje.getFullYear();
+
+return mes + " de " +  ano;
 }
 
 document.getElementById("mesAtual").innerText = pegarMesAtual();
