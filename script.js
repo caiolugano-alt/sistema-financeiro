@@ -50,7 +50,7 @@ await db.collection("financeiro").add({
 descricao,
 valor,
 tipo,
-mes
+mes: mes
 });
 
 alert("Salvo com sucesso!");
@@ -73,7 +73,9 @@ saldo = 0;
 const listaHTML = document.getElementById("lista");
 listaHTML.innerHTML = "";
 
-const query = await db.collection("financeiro").get();
+const query = await db.collection("financeiro")
+.where("mes",  "==", pegarMesAtual())
+.get();
 
 query.forEach(doc => {
 const data = doc.data();
