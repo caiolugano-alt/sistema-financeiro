@@ -2,52 +2,17 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Controle Financeiro</title>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-body {
-font-family: Arial;
-background: #f5f5f5;
-padding: 10px;
-}
-
-.card {
-background: white;
-padding: 10px;
-border-radius: 10px;
-margin-top: 10px;
-}
-
-input, select, button {
-width: 100%;
-padding: 10px;
-margin: 5px 0;
-}
-
-button {
-background: #007bff;
-color: white;
-border: none;
-}
-
-.delete {
-color: red;
-cursor: pointer;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h2>Controle Financeiro</h2>
+<h1>Controle Financeiro</h1>
+<h3 id="mesAtual"></h3>
 
-<select id="mes"></select>
-
-<input type="text" id="descricao" placeholder="Descrição">
-<input type="number" id="valor" placeholder="Valor">
+<input id="descricao" placeholder="Descrição">
+<input id="valor" type="number" placeholder="Valor">
 
 <select id="tipo">
 <option value="entrada">Entrada</option>
@@ -56,15 +21,21 @@ cursor: pointer;
 
 <button onclick="adicionar()">Adicionar</button>
 
-<div class="card">
-<h3>Saldo: R$ <span id="saldo">0</span></h3>
-</div>
+<h2 id="saldo">Saldo: R$ 0</h2>
 
-<div id="lista" class="card"></div>
+<ul id="lista"></ul>
 
-<canvas id="grafico"></canvas>
+<button onclick="gerarPDF()">Gerar Relatório PDF</button>
 
-<script type="module" src="script.js"></script>
+<!-- 🔥 FIREBASE CORRETO -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+<!-- PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- SEU SCRIPT -->
+<script src="script.js"></script>
 
 </body>
 </html>

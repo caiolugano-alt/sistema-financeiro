@@ -1,122 +1,125 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-getDatabase,
-ref,
-push,
-onValue,
-remove
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-// 🔥 SUA CONFIG
+// 🔥 CONFIG FIREBASE (SEU)
 const firebaseConfig = {
-apiKey: "AIzaSyA0Ybp19oNnssftNduxr-Hy8lz-U2T6BOc",
+apiKey: "AIzaSyA0Ybb190nNssftNduxr-Hy8lz-U2T6B0c",
 authDomain: "controle-financeiro-370c8.firebaseapp.com",
-databaseURL: "https://controle-financeiro-370c8-default-rtdb.firebaseio.com",
 projectId: "controle-financeiro-370c8",
 storageBucket: "controle-financeiro-370c8.appspot.com",
 messagingSenderId: "203673077768",
 appId: "1:203673077768:web:48ae75991c21a6f702e9bd"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+// 🔥 INICIAR FIREBASE
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-// ELEMENTOS
-const lista = document.getElementById("lista");
-const saldoEl = document.getElementById("saldo");
-const mesSelect = document.getElementById("mes");
+// 📅 MÊS AUTOMÁTICO
+function pegarMesAtual() {
+const data = new Date();
+return data.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+}
 
-// MESES
-const meses = [
-"Janeiro","Fevereiro","Março","Abril","Maio","Junho",
-"Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
-];
+document.getElementById("mesAtual").innerText = pegarMesAtual();
 
-meses.forEach((m, i) => {
-const op = document.createElement("option");
-op.value = i;
-op.text = m;
-mesSelect.appendChild(op);
-});
-
-mesSelect.value = new Date().getMonth();
-
-// REFERÊNCIA
-const dbRef = ref(db, "movimentacoes");
+// 🧠 VARIÁVEIS
+let saldo = 0;
 
 // ➕ ADICIONAR
-window.adicionar = function () {
+async function adicionar() {
 const descricao = document.getElementById("descricao").value;
-const valor = Number(document.getElementById("valor").value);
+const valor = parseFloat(document.getElementById("valor").value);
 const tipo = document.getElementById("tipo").value;
-const mes = mesSelect.value;
+const mes = pegarMesAtual();
 
-if (!descricao || !valor) return alert("Preencha tudo");
+if (!descricao || !valor) {
+alert("Preencha tudo!");
+return;
+}
 
-push(dbRef, {
+try {
+await db.collection("financeiro").add({
 descricao,
 valor,
 tipo,
 mes
 });
-};
 
-// ❌ REMOVER
-window.remover = function (id) {
-remove(ref(db, "movimentacoes/" + id));
-};
+alert("Salvo com sucesso!");
 
-// 🔄 CARREGAR
-onValue(dbRef, (snapshot) => {
-lista.innerHTML = "";
+document.getElementById("descricao").value = "";
+document.getElementById("valor").value = "";
 
-let saldo = 0;
-let entrada = 0;
-let saida = 0;
+carregar();
 
-const mesAtual = mesSelect.value;
+} catch (erro) {
+alert("Erro ao salvar!");
+console.error(erro);
+}
+}
 
-snapshot.forEach((child) => {
-const item = child.val();
-const id = child.key;
+// 🔄 CARREGAR DADOS
+async function carregar() {
+saldo = 0;
 
-if (item.mes != mesAtual) return;
+const listaHTML = document.getElementById("lista");
+listaHTML.innerHTML = "";
 
-if (item.tipo === "entrada") {
-saldo += item.valor;
-entrada += item.valor;
+const query = await db.collection("financeiro").get();
+
+query.forEach(doc => {
+const data = doc.data();
+
+// 💰 SALDO CORRETO
+if (data.tipo === "entrada") {
+saldo += data.valor;
 } else {
-saldo -= item.valor;
-saida += item.valor;
+saldo -= data.valor;
 }
 
-lista.innerHTML += `
-<div>
-${item.descricao} - R$ ${item.valor}
-<span class="delete" onclick="remover('${id}')">❌</span>
-</div>
+// 📄 ITEM
+const li = document.createElement("li");
+
+li.innerHTML = `
+${data.descricao} - R$ ${data.valor} (${data.tipo})
+<button onclick="excluir('${doc.id}')" style="margin-left:10px; background:red; color:white; border:none; padding:5px; cursor:pointer;">
+X
+</button>
 `;
+
+listaHTML.appendChild(li);
 });
 
-saldoEl.innerText = saldo;
-
-// gráfico
-if (window.chart) window.chart.destroy();
-
-const ctx = document.getElementById("grafico");
-
-window.chart = new Chart(ctx, {
-type: "pie",
-data: {
-labels: ["Entradas", "Saídas"],
-datasets: [{
-data: [entrada, saida]
-}]
+document.getElementById("saldo").innerText = "Saldo: R$ " + saldo;
 }
-});
+
+// ❌ EXCLUIR
+async function excluir(id) {
+if (!confirm("Deseja excluir?")) return;
+
+await db.collection("financeiro").doc(id).delete();
+
+carregar();
+}
+
+// 📄 PDF
+function gerarPDF() {
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
+
+doc.text("Relatório Financeiro", 10, 10);
+
+let y = 20;
+
+const itens = document.querySelectorAll("#lista li");
+
+itens.forEach(item => {
+doc.text(item.innerText.replace("X", ""), 10, y);
+y += 10;
 });
 
-// troca de mês
-mesSelect.addEventListener("change", () => {
-location.reload();
-});
+doc.text("Saldo: R$ " + saldo, 10, y + 10);
+
+doc.save("relatorio.pdf");
+}
+
+// 🚀 INICIAR
+carregar();

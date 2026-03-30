@@ -1,53 +1,34 @@
 body {
-background: #0d1117;
 font-family: Arial;
-color: white;
-}
-
-.container {
 max-width: 500px;
 margin: auto;
-}
-
-h2 {
-text-align: center;
-}
-
-.form {
-display: flex;
-gap: 10px;
-margin-bottom: 15px;
+padding: 20px;
 }
 
 input, select, button {
+width: 100%;
+margin: 5px 0;
 padding: 10px;
-border-radius: 8px;
-border: none;
 }
 
 button {
-background: #2563eb;
+background: blue;
 color: white;
-cursor: pointer;
-}
-
-.box {
-padding: 15px;
-border-radius: 10px;
-margin-bottom: 15px;
-}
-
-.vermelho { background: #ef4444; }
-.amarelo { background: #f59e0b; }
-.azul { background: #3b82f6; }
-.verde { background: #10b981; }
-
-ul {
-list-style: none;
-padding: 0;
+border: none;
+border-radius: 5px;
 }
 
 li {
 display: flex;
 justify-content: space-between;
+padding: 10px;
+border-bottom: 1px solid #ccc;
+}
+
+.entrada {
+color: green;
+}
+
+.saida {
+color: red;
 }
